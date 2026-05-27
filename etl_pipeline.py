@@ -1,0 +1,37 @@
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, upper, current_date
+import boto3
+import os
+
+spark = SparkSession.builder \
+    .appName("ETL Pipeline") \
+    .getOrCreate()
+
+# Extract
+data = [
+    ("Alice", 25, "beijing"),
+    ("Bob", 30, "shanghai"),
+    ("Carol", 22, "guangzhou"),
+    ("David", None, "chengdu")
+]
+
+df = spark.createDataFrame(data, ["name", "age", "city"])
+
+# Transform
+df_clean = df \
+    .filter(col("age").isNotNull()) \
+    .withColumn("city", upper(col("city"))) \
+    .withColumn("processed_date", current_date())
+
+print("清洗后数据：")
+df_clean.show()
+
+# Load：先存本地
+df_clean.toPandas().to_csv("/tmp/etl_output.csv", index=False)
+
+# 再上传S3
+s3 = boto3.client('s3')
+s3.upload_file("/tmp/etl_output.csv", "yu-data-lake-test", "pyspark-output/result.csv")
+
+print("✅ 成功存到S3！")
+spark.stop()
