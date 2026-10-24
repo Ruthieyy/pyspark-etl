@@ -1,0 +1,5 @@
+# Python 3.11 or 3.12. Tested on CPython 3.12.3.
+# PySpark 3.5 does not support Python 3.14.
+pyspark==3.5.9
+py4j==0.10.9.9
+pytest==8.4.2
