@@ -1,0 +1,5 @@
+name,age,city,event_date
+Alice,25,beijing,2024-03-01
+Bob,30,shanghai,2024-03-01
+Carol,22, guangzhou ,2024-03-02
+David,,chengdu,2024-03-02
